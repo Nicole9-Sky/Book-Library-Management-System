@@ -50,26 +50,29 @@ const MyBag = () => {
 
   // Handle form submission (Checkout)
   const handleCheckout = () => {
-    if (!readerId || !books.length) {
-      setError('Please select books and enter a valid Reader ID.');
+    const returnDueDate = document.getElementById("returnDate").value;
+    if (!readerId || !books.length || !returnDueDate) {
+      setError('Please select books, enter a valid Reader ID, and set a return due date.');
       return;
     }
   
     axios
-  .post(`http://localhost:8000/api/reader/${readerId}/checkout/`, {
-    reader_id: readerId,
-    books: books.map((book) => book.id), // Send book IDs
-  })
-  .then(() => {
-    alert('Books checked out successfully!');
-    setBooks([]);
-    localStorage.removeItem('bag'); // Clear the bag after checkout
-  })
-  .catch((error) => {
-    setError('Checkout failed. Please try again.');
-    console.error('Checkout Error:', error.response.data);
-  });
+      .post(`http://localhost:8000/api/reader/${readerId}/checkout/`, {
+        reader_id: readerId,
+        books: books.map((book) => book.id),
+        due_date: returnDueDate,  // Send the due date
+      })
+      .then(() => {
+        alert('Books checked out successfully!');
+        setBooks([]);
+        localStorage.removeItem('bag'); // Clear the bag after checkout
+      })
+      .catch((error) => {
+        setError('Checkout failed. Please try again.');
+        console.error('Checkout Error:', error.response.data);
+      });
   };
+  
 
   const styles = {
     container: {

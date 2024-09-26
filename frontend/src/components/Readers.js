@@ -6,25 +6,32 @@ const Readers = () => {
     container: {
       fontFamily: 'Arial, sans-serif',
       backgroundColor: '#f0f0f0',
-      // padding: '20px',
       minHeight: '100vh',
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: '20px',
+    },
+    leftSection: {
+      flex: 2,
+      padding: '20px',
+      backgroundColor: '#fff',
+      borderRadius: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      marginRight: '20px',
+    },
+    rightSection: {
+      flex: 1,
+      padding: '20px',
+      backgroundColor: '#e8f4f8',
+      borderRadius: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
     header: {
       textAlign: 'center',
       marginBottom: '20px',
       fontSize: '24px',
       color: '#333',
-    },
-    readerListSection: {
-      width: '80%',
-      padding: '20px',
-      backgroundColor: '#fff',
-      borderRadius: '10px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
     table: {
       width: '100%',
@@ -54,12 +61,43 @@ const Readers = () => {
       borderRadius: '5px',
       fontSize: '16px',
     },
+    formSection: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+    },
+    formField: {
+      marginBottom: '10px',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    formInput: {
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '5px',
+      fontSize: '16px',
+    },
+    addButton: {
+      padding: '10px 20px',
+      backgroundColor: '#28a745',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '5px',
+      fontSize: '16px',
+      cursor: 'pointer',
+    },
   };
 
   const [readers, setReaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [newReader, setNewReader] = useState({
+    reader_name: '',
+    reader_contact: '',
+    reference_id: '',
+    reader_address: '',
+  });
 
   // Fetch readers from the Django API
   useEffect(() => {
@@ -79,11 +117,33 @@ const Readers = () => {
     reader.reader_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleInputChange = (e) => {
+    setNewReader({ ...newReader, [e.target.name]: e.target.value });
+  };
+
+  const handleAddReader = () => {
+    axios.post('http://localhost:8000/api/readers/', newReader)
+      .then(response => {
+        setReaders([...readers, response.data]); // Add new reader to the list
+        setNewReader({
+          reader_name: '',
+          reader_contact: '',
+          reference_id: '',
+          reader_address: '',
+        }); // Clear form
+      })
+      .catch(error => {
+        console.error('There was an error adding the reader!', error);
+        setError('Failed to add reader. Please try again.');
+      });
+  };
+
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>Reader List</h1>
-
-      <div style={styles.readerListSection}>
+      
+      {/* Left Section: Book/Reader List */}
+      <div style={styles.leftSection}>
+        <h1 style={styles.header}>Books in Your Bag</h1>
         <div style={styles.searchSection}>
           <input
             type="text"
@@ -126,6 +186,56 @@ const Readers = () => {
         {!loading && !error && filteredReaders.length === 0 && (
           <p>No readers found.</p>
         )}
+      </div>
+      
+      {/* Right Section: Add Reader Form */}
+      <div style={styles.rightSection}>
+        <h2 style={styles.header}>Add New Readers</h2>
+        <div style={styles.formSection}>
+        <div style={styles.formField}>
+            <label>Name</label>
+            <input
+              type="text"
+              name="reader_name"
+              style={styles.formInput}
+              value={newReader.reader_name}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.formField}>
+            <label>Contact</label>
+            <input
+              type="text"
+              name="reader_contact"
+              style={styles.formInput}
+              value={newReader.reader_contact}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.formField}>
+            <label>Reference ID</label>
+            <input
+              type="text"
+              name="reference_id"
+              style={styles.formInput}
+              value={newReader.reference_id}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.formField}>
+            <label>Address</label>
+            <input
+              type="text"
+              name="reader_address"
+              style={styles.formInput}
+              value={newReader.reader_address}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button style={styles.addButton} onClick={handleAddReader}>
+            Add Reader
+          </button>
+        </div>
       </div>
     </div>
   );

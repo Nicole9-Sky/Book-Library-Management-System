@@ -36,7 +36,7 @@ def add_to_bag(request, book_id):
 # Get reader details by ID
 def get_reader_by_id(request, reader_id):
     try:
-        reader_obj = reader.objects.get(id=reader_id)  # Use lowercase 'reader'
+        reader_obj = reader.objects.get(id=reader_id)  
         return JsonResponse({
             'name': reader_obj.reader_name,
             'contact': reader_obj.reader_contact,
@@ -47,18 +47,18 @@ def get_reader_by_id(request, reader_id):
 
 # Update reader's bag (Add/Remove books)
 def update_reader_bag(request, reader_id):
-    reader_obj = get_object_or_404(reader, id=reader_id)  # Use lowercase 'reader'
+    reader_obj = get_object_or_404(reader, id=reader_id) 
     
     if request.method == "POST":
         # Add a book to the reader's bag
-        book_id = request.data.get('book_id')  # Use request.data for POST
+        book_id = request.data.get('book_id')  
         book = get_object_or_404(Book, id=book_id)
         reader_obj.books_in_bag.add(book)
         return JsonResponse({'message': 'Book added to bag'}, status=200)
     
     if request.method == "DELETE":
         # Remove a book from the reader's bag
-        book_id = request.data.get('book_id')  # Use request.data for DELETE
+        book_id = request.data.get('book_id') 
         book = get_object_or_404(Book, id=book_id)
         reader_obj.books_in_bag.remove(book)
         return JsonResponse({'message': 'Book removed from bag'}, status=200)
@@ -66,22 +66,27 @@ def update_reader_bag(request, reader_id):
 # API to checkout all books in the reader's bag
 @api_view(['POST'])
 def checkout_books(request, reader_id):
-    reader_obj = get_object_or_404(reader, id=reader_id)  # Use lowercase 'reader'
+    try:
+        reader = Reader.objects.get(id=reader_id)
+        books = Book.objects.filter(id__in=request.data['books'])
 
-    if reader_obj.books_in_bag.count() == 0:
-        return Response({'error': 'No books in the bag to checkout.'}, status=400)
+        for book in books:
+            # Check if the book is available for checkout
+            if book.is_checked_out:
+                return Response({"error": f"{book.title} is already checked out."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Simulate the checkout process, clearing the books in the bag
-    checked_out_books = list(reader_obj.books_in_bag.all())
-    reader_obj.books_in_bag.clear()  # Clear the books after checkout
+            # Mark the book as checked out
+            book.is_checked_out = True
+            book.save()
 
-    # Serialize the checked out books for response
-    checked_out_books_data = [{'title': book.title, 'author': book.author} for book in checked_out_books]
+            # Create a new checkout record
+            CheckoutRecord.objects.create(reader=reader, book=book, due_date=request.data['due_date'])
 
-    return Response({
-        'message': 'Checkout completed successfully.',
-        'checked_out_books': checked_out_books_data
-    }, status=200)
+        return Response({"message": "Books checked out successfully!"}, status=status.HTTP_200_OK)
+    except Reader.DoesNotExist:
+        return Response({"error": "Reader not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # API to add books to the reader's bag
 @api_view(['POST'])

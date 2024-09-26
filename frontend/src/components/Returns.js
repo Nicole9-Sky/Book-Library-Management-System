@@ -4,12 +4,12 @@ import axios from 'axios';
 const Returns = () => {
   const [rentals, setRentals] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rentalsPerPage] = useState(5); // You can change this number to the desired rentals per page
+  const [rentalsPerPage] = useState(5); // Rentals per page
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Memoize the fetchRentals function to avoid unnecessary re-renders
+  // Fetch rentals based on the searchTerm and currentPage
   const fetchRentals = useCallback(() => {
     setLoading(true);
     axios
@@ -25,10 +25,25 @@ const Returns = () => {
       });
   }, [currentPage, searchTerm]);
 
-  // Fetch rentals whenever currentPage or searchTerm changes
+  // Fetch rentals when searchTerm or currentPage changes
   useEffect(() => {
-    fetchRentals();
-  }, [fetchRentals]);
+    if (searchTerm) {
+      fetchRentals();
+    }
+  }, [currentPage, searchTerm, fetchRentals]);
+
+  // Return functionality
+  const handleReturn = (bookId) => {
+    axios.post(`http://localhost:8000/api/book/${bookId}/return/`)
+      .then(() => {
+        alert('Book returned successfully!');
+        fetchRentals(); // Refresh the rentals list after returning the book
+      })
+      .catch((error) => {
+        setError('Return failed. Please try again.');
+        console.error('Return failed:', error.response.data);
+      });
+  };
 
   // Pagination logic
   const indexOfLastRental = currentPage * rentalsPerPage;
@@ -107,6 +122,13 @@ const Returns = () => {
       cursor: 'pointer',
       margin: '0 5px',
     },
+    paginationButtonDisabled: {
+      padding: '10px 20px',
+      border: '1px solid #ddd',
+      backgroundColor: '#eee',
+      cursor: 'not-allowed',
+      margin: '0 5px',
+    },
   };
 
   return (
@@ -152,7 +174,12 @@ const Returns = () => {
               <td style={styles.thTd}>{rental.rentalDate}</td>
               <td style={styles.thTd}>{rental.returnDate}</td>
               <td style={styles.thTd}>
-                <button style={styles.returnButton}>Return</button>
+                <button
+                  onClick={() => handleReturn(rental.bookId)}
+                  style={styles.returnButton}
+                >
+                  Return
+                </button>
               </td>
             </tr>
           ))}
@@ -160,8 +187,20 @@ const Returns = () => {
       </table>
 
       <div style={styles.pagination}>
-        <button onClick={handlePreviousPage} style={styles.paginationButton}>Previous</button>
-        <button onClick={handleNextPage} style={styles.paginationButton}>Next</button>
+        <button
+          onClick={handlePreviousPage}
+          style={currentPage === 1 ? styles.paginationButtonDisabled : styles.paginationButton}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          onClick={handleNextPage}
+          style={currentPage * rentalsPerPage >= rentals.length ? styles.paginationButtonDisabled : styles.paginationButton}
+          disabled={currentPage * rentalsPerPage >= rentals.length}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

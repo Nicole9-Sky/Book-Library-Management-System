@@ -4,11 +4,15 @@ import axios from 'axios';
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [bag, setBag] = useState(() => {
-    // Retrieve the bag from localStorage when the component mounts
     const savedBag = localStorage.getItem('bag');
     return savedBag ? JSON.parse(savedBag) : [];
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const [newBook, setNewBook] = useState({
+    title: '',
+    author: '',
+    published: '',
+  });
 
   const styles = {
     container: {
@@ -16,6 +20,22 @@ const Books = () => {
       backgroundColor: '#f0f0f0',
       textAlign: 'center',
       padding: '20px',
+    },
+    contentWrapper: {
+      display: 'flex',
+      justifyContent: 'space-between', // Ensure the content is spread across the available width
+      marginTop: '20px',
+    },
+    booksSection: {
+      flex: 2, // Take up more space on the left side for the books list
+      marginRight: '20px',
+    },
+    formSection: {
+      flex: 1, // Take up less space on the right side for the form
+      padding: '20px',
+      backgroundColor: '#ffffff',
+      borderRadius: '8px',
+      textAlign: 'left', // Align form content to the left
     },
     searchSection: {
       margin: '30px 0',
@@ -59,6 +79,26 @@ const Books = () => {
       justifyContent: 'space-between',
       alignItems: 'center',
     },
+    formField: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginBottom: '10px',
+    },
+    formInput: {
+      padding: '10px',
+      fontSize: '16px',
+      border: '1px solid #ccc',
+      borderRadius: '5px',
+    },
+    addBookButton: {
+      padding: '10px 20px',
+      fontSize: '16px',
+      backgroundColor: '#28a745',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    },
   };
 
   // Fetch books from the Django API
@@ -88,7 +128,7 @@ const Books = () => {
     if (!bag.some((b) => b.id === book.id)) {
       const updatedBag = [...bag, book];
       setBag(updatedBag);
-      localStorage.setItem('bag', JSON.stringify(updatedBag)); // Save to localStorage
+      localStorage.setItem('bag', JSON.stringify(updatedBag));
     }
   };
 
@@ -96,12 +136,29 @@ const Books = () => {
   const removeFromBag = (bookId) => {
     const updatedBag = bag.filter((b) => b.id !== bookId);
     setBag(updatedBag);
-    localStorage.setItem('bag', JSON.stringify(updatedBag)); // Update localStorage
+    localStorage.setItem('bag', JSON.stringify(updatedBag));
   };
 
   // Check if the book is in the bag
   const isInBag = (bookId) => {
     return bag.some((b) => b.id === bookId);
+  };
+
+  // Handle form input change for new book
+  const handleInputChange = (e) => {
+    setNewBook({ ...newBook, [e.target.name]: e.target.value });
+  };
+
+  // Handle adding a new book to the database
+  const handleAddBook = () => {
+    axios.post('http://localhost:8000/api/books/', newBook)
+      .then(response => {
+        setBooks([...books, response.data]); // Add the new book to the list
+        setNewBook({ title: '', author: '', published: '' }); // Clear the form
+      })
+      .catch(error => {
+        console.error('There was an error adding the book!', error);
+      });
   };
 
   return (
@@ -122,32 +179,75 @@ const Books = () => {
         <p>{books.length} books available.</p>
       </div>
 
-      {/* Books List */}
-      <div style={styles.booksList}>
-        {books.map((book) => (
-          <div key={book.id} style={styles.bookItem}>
-            <div>
-              <h3>{book.title}</h3>
-              <p>Written by {book.author}</p>
-              <p>Published by {book.published}</p>
-            </div>
-            {isInBag(book.id) ? (
-              <button
-                style={styles.removeButton}
-                onClick={() => removeFromBag(book.id)}
-              >
-                Remove
-              </button>
-            ) : (
-              <button
-                style={styles.button}
-                onClick={() => addToBag(book)}
-              >
-                Add to bag
-              </button>
-            )}
+      {/* Content Wrapper to organize books list and form */}
+      <div style={styles.contentWrapper}>
+        {/* Books List Section */}
+        <div style={styles.booksSection}>
+          <div style={styles.booksList}>
+            {books.map((book) => (
+              <div key={book.id} style={styles.bookItem}>
+                <div>
+                  <h3>{book.title}</h3>
+                  <p>Written by {book.author}</p>
+                  <p>Published by {book.published}</p>
+                </div>
+                {isInBag(book.id) ? (
+                  <button
+                    style={styles.removeButton}
+                    onClick={() => removeFromBag(book.id)}
+                  >
+                    Remove
+                  </button>
+                ) : (
+                  <button
+                    style={styles.button}
+                    onClick={() => addToBag(book)}
+                  >
+                    Add to bag
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Add Book Form Section */}
+        <div style={styles.formSection}>
+          <h2>Add a New Book</h2>
+          <div style={styles.formField}>
+            <label>Title</label>
+            <input
+              type="text"
+              name="title"
+              style={styles.formInput}
+              value={newBook.title}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.formField}>
+            <label>Author</label>
+            <input
+              type="text"
+              name="author"
+              style={styles.formInput}
+              value={newBook.author}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.formField}>
+            <label>Published</label>
+            <input
+              type="text"
+              name="published"
+              style={styles.formInput}
+              value={newBook.published}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button style={styles.addBookButton} onClick={handleAddBook}>
+            Add Book
+          </button>
+        </div>
       </div>
     </div>
   );
