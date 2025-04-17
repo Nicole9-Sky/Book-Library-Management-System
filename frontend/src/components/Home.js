@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; 
 
 const Home = () => {
+  const navigate = useNavigate();
   const styles = {
     container: {
       textAlign: 'center',
@@ -114,7 +116,7 @@ const Home = () => {
           <p style={styles.heroDescription}>
             Welcome to Praiselite Library. We have a large collection of books to cater to the reading needs of all kinds of readers.
           </p>
-          <button style={styles.ctaButton}>Browse our collection</button>
+          <button style={styles.ctaButton} onClick={() => navigate('/books')}>Browse our collection</button>
         </div>
       </section>
 
