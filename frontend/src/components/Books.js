@@ -8,11 +8,8 @@ const Books = () => {
     return savedBag ? JSON.parse(savedBag) : [];
   });
   const [searchTerm, setSearchTerm] = useState('');
-  const [newBook, setNewBook] = useState({
-    title: '',
-    author: '',
-    published: '',
-  });
+  const [newBook, setNewBook] = useState({ title: '', author: '', published: '' });
+  const [editingBook, setEditingBook] = useState(null);
 
   const styles = {
     container: {
@@ -23,19 +20,19 @@ const Books = () => {
     },
     contentWrapper: {
       display: 'flex',
-      justifyContent: 'space-between', // Ensure the content is spread across the available width
+      justifyContent: 'space-between',
       marginTop: '20px',
     },
     booksSection: {
-      flex: 2, // Take up more space on the left side for the books list
+      flex: 2,
       marginRight: '20px',
     },
     formSection: {
-      flex: 1, // Take up less space on the right side for the form
+      flex: 1,
       padding: '20px',
       backgroundColor: '#ffffff',
       borderRadius: '8px',
-      textAlign: 'left', // Align form content to the left
+      textAlign: 'left',
     },
     searchSection: {
       margin: '30px 0',
@@ -52,7 +49,8 @@ const Books = () => {
     },
     button: {
       padding: '10px 15px',
-      fontSize: '16px',
+      fontSize: '16px', 
+      margin:'5px',
       backgroundColor: '#2563eb',
       color: 'white',
       border: 'none',
@@ -89,9 +87,11 @@ const Books = () => {
       fontSize: '16px',
       border: '1px solid #ccc',
       borderRadius: '5px',
+      margin:'5px',
     },
     addBookButton: {
       padding: '10px 20px',
+      margin:'5px',
       fontSize: '16px',
       backgroundColor: '#28a745',
       color: 'white',
@@ -101,69 +101,91 @@ const Books = () => {
     },
   };
 
-  // Fetch books from the Django API
+  // Fetch books from the API
   useEffect(() => {
     axios.get('http://localhost:8000/api/books/')
       .then(response => {
         setBooks(response.data);
       })
       .catch(error => {
-        console.error('There was an error fetching the books!', error);
+        console.error('Error fetching books:', error);
       });
   }, []);
 
-  // Handle search functionality
   const handleSearch = () => {
     axios.get(`http://localhost:8000/api/books/?search=${searchTerm}`)
-      .then(response => {
-        setBooks(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error searching the books!', error);
-      });
+      .then(response => setBooks(response.data))
+      .catch(error => console.error('Search error:', error));
   };
 
-  // Handle adding a book to the bag
   const addToBag = (book) => {
-    if (!bag.some((b) => b.id === book.id)) {
+    if (!bag.some(b => b.id === book.id)) {
       const updatedBag = [...bag, book];
       setBag(updatedBag);
       localStorage.setItem('bag', JSON.stringify(updatedBag));
     }
   };
 
-  // Handle removing a book from the bag
   const removeFromBag = (bookId) => {
-    const updatedBag = bag.filter((b) => b.id !== bookId);
+    const updatedBag = bag.filter(b => b.id !== bookId);
     setBag(updatedBag);
     localStorage.setItem('bag', JSON.stringify(updatedBag));
   };
 
-  // Check if the book is in the bag
   const isInBag = (bookId) => {
-    return bag.some((b) => b.id === bookId);
+    return bag.some(b => b.id === bookId);
   };
 
-  // Handle form input change for new book
   const handleInputChange = (e) => {
     setNewBook({ ...newBook, [e.target.name]: e.target.value });
   };
 
-  // Handle adding a new book to the database
   const handleAddBook = () => {
     axios.post('http://localhost:8000/api/books/', newBook)
       .then(response => {
-        setBooks([...books, response.data]); // Add the new book to the list
-        setNewBook({ title: '', author: '', published: '' }); // Clear the form
+        setBooks([...books, response.data]);
+        setNewBook({ title: '', author: '', published: '' });
       })
       .catch(error => {
-        console.error('There was an error adding the book!', error);
+        console.error('Error adding book:', error);
+      });
+  };
+
+  const handleEditClick = (book) => {
+    setEditingBook(book);
+  };
+
+  const handleEditChange = (e) => {
+    setEditingBook({ ...editingBook, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateBook = () => {
+    axios.put(`http://localhost:8000/api/books/${editingBook.id}/`, editingBook)
+      .then(response => {
+        const updatedBooks = books.map(book =>
+          book.id === editingBook.id ? response.data : book
+        );
+        setBooks(updatedBooks);
+        setEditingBook(null);
+      })
+      .catch(error => {
+        console.error('Error updating book:', error);
+      });
+  };
+
+  const handleDeleteBook = (id) => {
+    axios.delete(`http://localhost:8000/api/books/${id}/`)
+      .then(() => {
+        const updatedBooks = books.filter(book => book.id !== id);
+        setBooks(updatedBooks);
+      })
+      .catch(error => {
+        console.error('Error deleting book:', error);
       });
   };
 
   return (
     <div style={styles.container}>
-      {/* Search Section */}
       <div style={styles.searchSection}>
         <h2>Search for books</h2>
         <div style={styles.searchBox}>
@@ -177,32 +199,64 @@ const Books = () => {
           <button style={styles.button} onClick={handleSearch}>Search</button>
         </div>
         <p>{books.length} books available.</p>
+        <p>My Bag: {bag.length}</p>
       </div>
 
-      {/* Content Wrapper to organize books list and form */}
       <div style={styles.contentWrapper}>
-        {/* Books List Section */}
         <div style={styles.booksSection}>
           <div style={styles.booksList}>
-            {books.map((book) => (
+            {books.map(book => (
               <div key={book.id} style={styles.bookItem}>
-                <div>
-                  <h3>{book.title}</h3>
-                  <p>Written by {book.author}</p>
-                  <p>Published by {book.published}</p>
-                </div>
+                {editingBook && editingBook.id === book.id ? (
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="text"
+                      name="title"
+                      value={editingBook.title}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <input
+                      type="text"
+                      name="author"
+                      value={editingBook.author}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <input
+                      type="text"
+                      name="published"
+                      value={editingBook.published}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <button style={styles.addBookButton} onClick={handleUpdateBook}>
+                      Save
+                    </button>
+                    <button style={styles.removeButton} onClick={() => setEditingBook(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ flex: 1 }}>
+                    <h3>{book.title}</h3>
+                    <p>Written by {book.author}</p>
+                    <p>Published by {book.published}</p>
+                    <button style={styles.button} onClick={() => handleEditClick(book)}>
+                      Edit
+                    </button>
+                    <button style={styles.removeButton} onClick={() => handleDeleteBook(book.id)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
+
                 {isInBag(book.id) ? (
-                  <button
-                    style={styles.removeButton}
-                    onClick={() => removeFromBag(book.id)}
-                  >
+                  <button style={styles.removeButton} onClick={() => removeFromBag(book.id)}>
                     Remove
                   </button>
                 ) : (
-                  <button
-                    style={styles.button}
-                    onClick={() => addToBag(book)}
-                  >
+                  <button style={styles.button} onClick={() => addToBag(book)}>
                     Add to bag
                   </button>
                 )}
@@ -211,7 +265,6 @@ const Books = () => {
           </div>
         </div>
 
-        {/* Add Book Form Section */}
         <div style={styles.formSection}>
           <h2>Add a New Book</h2>
           <div style={styles.formField}>

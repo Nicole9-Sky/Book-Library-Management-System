@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import reader, Book
+from .models import reader, Book, CheckoutRecord
 
 class ReaderSerializer(serializers.ModelSerializer):
     # books_in_bag = BookSerializer(many=True, read_only=True)
@@ -13,3 +13,8 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'title', 'author', 'published']
+
+class CheckoutRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CheckoutRecord
+        fields = ['id', 'reader', 'book', 'checkout_date', 'due_date']

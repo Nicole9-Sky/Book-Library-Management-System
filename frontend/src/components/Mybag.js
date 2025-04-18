@@ -213,12 +213,12 @@ const MyBag = () => {
 
           <label htmlFor="startDate" style={styles.formLabel}>Start date & time:</label>
           <input
-            type="text"
+            type="date"
             id="startDate"
             name="startDate"
-            defaultValue="July 1, 2023, 5:43 p.m."
+            // defaultValue="July 1, 2023, 5:43 p.m."
             style={styles.formInput}
-            readOnly
+            // readOnly
           />
 
           <label htmlFor="returnDate" style={styles.formLabel}>Return due date & time:</label>

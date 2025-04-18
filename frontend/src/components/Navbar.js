@@ -32,7 +32,7 @@ const Navbar = () => {
 
   return (
     <header style={styles.navbar}>
-      <div style={styles.navbarLogo}>Praiselite Library</div>
+      <div style={styles.navbarLogo}>City Library</div>
       <nav style={styles.navbarMenu}>
         <Link to="/" style={styles.navbarLink(location.pathname === '/')}>Home</Link>
         <Link to="/readers" style={styles.navbarLink(location.pathname === '/readers')}>Readers</Link>
