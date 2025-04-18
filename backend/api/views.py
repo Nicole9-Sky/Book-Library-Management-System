@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import reader, Book  # Use 'reader' (lowercase)
-from .serializers import ReaderSerializer, BookSerializer
+from .models import reader, Book, CheckoutRecord
+from .serializers import ReaderSerializer, BookSerializer, CheckoutRecordSerializer
 from django.utils.timezone import now
 
 # ReaderViewSet for handling CRUD operations via REST API
@@ -67,7 +67,7 @@ def update_reader_bag(request, reader_id):
 @api_view(['POST'])
 def checkout_books(request, reader_id):
     try:
-        reader = Reader.objects.get(id=reader_id)
+        reader_obj = reader.objects.get(id=reader_id)
         books = Book.objects.filter(id__in=request.data['books'])
 
         for book in books:
@@ -80,10 +80,10 @@ def checkout_books(request, reader_id):
             book.save()
 
             # Create a new checkout record
-            CheckoutRecord.objects.create(reader=reader, book=book, due_date=request.data['due_date'])
+            CheckoutRecord.objects.create(reader=reader_obj, book=book, due_date=request.data['due_date'])
 
         return Response({"message": "Books checked out successfully!"}, status=status.HTTP_200_OK)
-    except Reader.DoesNotExist:
+    except reader.DoesNotExist:
         return Response({"error": "Reader not found."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

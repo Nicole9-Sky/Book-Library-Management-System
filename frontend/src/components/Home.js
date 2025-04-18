@@ -98,23 +98,13 @@ const Home = () => {
   return (
     <div style={styles.container}>
       {/* Navigation Bar */}
-      {/* <header style={styles.navbar}>
-        <div style={styles.navbarLogo}>Praiselite Library</div>
-        <nav style={styles.navbarMenu}>
-          <a href="#" style={styles.navbarLink}>Home</a>
-          <a href="#" style={styles.navbarLink}>Readers</a>
-          <a href="#" style={styles.navbarLink}>Books</a>
-          <a href="#" style={styles.navbarLink}>My Bag</a>
-          <a href="#" style={styles.navbarLink}>Returns</a>
-        </nav>
-      </header> */}
-
+    
       {/* Hero Section */}
       <section style={styles.hero}>
         <div style={styles.heroText}>
           <h1 style={styles.heroTitle}>Hello, readers!</h1>
           <p style={styles.heroDescription}>
-            Welcome to Praiselite Library. We have a large collection of books to cater to the reading needs of all kinds of readers.
+            Welcome to City Library. We have a large collection of books to cater to the reading needs of all kinds of readers.
           </p>
           <button style={styles.ctaButton} onClick={() => navigate('/books')}>Browse our collection</button>
         </div>
@@ -149,7 +139,7 @@ const Home = () => {
 
       {/* Footer */}
       <footer style={styles.footer}>
-        <p>© Praiselite Library 2024</p>
+        <p>© City Library 2025</p>
       </footer>
     </div>
   );
