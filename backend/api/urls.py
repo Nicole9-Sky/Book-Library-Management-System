@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ReaderViewSet, BookViewSet, get_reader_by_id, update_reader_bag, checkout_books,add_to_bag, get_checked_out_books, return_book
+from .views import ReaderViewSet, BookViewSet, get_reader_by_id, update_reader_bag, checkout_books,add_to_bag, get_checked_out_books, return_book, returns_list
 
 # Create the router for API viewsets
 router = DefaultRouter()
@@ -27,6 +27,8 @@ urlpatterns = [
     path('reader/<int:reader_id>/checked_out_books/', get_checked_out_books, name='get_checked_out_books'),
 
     path('reader/<int:reader_id>/return_book/<int:book_id>/', return_book, name='return_book'),
+
+    path('returns/', returns_list, name='returns_list'),
 ]
 
 

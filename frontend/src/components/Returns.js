@@ -1,73 +1,52 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Returns = () => {
   const [rentals, setRentals] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rentalsPerPage] = useState(5); // Rentals per page
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Fetch rentals based on the searchTerm and currentPage
-  const fetchRentals = useCallback(() => {
+  // Fetch all rentals from the API
+  const fetchRentals = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:8000/api/rentals/?page=${currentPage}&search=${searchTerm}`)
+      .get(`http://localhost:8000/api/returns/`)
       .then((response) => {
-        setRentals(response.data.rentals); // Assuming API returns an array of rentals
+        setRentals(response.data); // Assuming API returns the array directly
         setError('');
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setError('Error fetching rentals. Please try again.');
         setLoading(false);
       });
-  }, [currentPage, searchTerm]);
+  };
 
-  // Fetch rentals when searchTerm or currentPage changes
   useEffect(() => {
-    if (searchTerm) {
-      fetchRentals();
-    }
-  }, [currentPage, searchTerm, fetchRentals]);
+    fetchRentals();
+  }, []);
 
   // Return functionality
-  const handleReturn = (bookId) => {
-    axios.post(`http://localhost:8000/api/book/${bookId}/return/`)
+  const handleReturn = (readerId, bookId) => {
+    axios
+      .post(`http://localhost:8000/api/reader/${readerId}/return_book/${bookId}/`)
       .then(() => {
         alert('Book returned successfully!');
-        fetchRentals(); // Refresh the rentals list after returning the book
+        fetchRentals(); // Refresh the rentals list
       })
       .catch((error) => {
         setError('Return failed. Please try again.');
-        console.error('Return failed:', error.response.data);
+        console.error('Return failed:', error.response?.data);
       });
   };
+  
 
-  // Pagination logic
-  const indexOfLastRental = currentPage * rentalsPerPage;
-  const indexOfFirstRental = indexOfLastRental - rentalsPerPage;
-  const currentRentals = rentals.slice(indexOfFirstRental, indexOfLastRental);
-
-  // Handle page change
-  const handleNextPage = () => {
-    if (currentPage * rentalsPerPage < rentals.length) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1);
-    }
-  };
-
-  const handleSearch = () => {
-    setCurrentPage(1); // Reset to the first page after a new search
-    fetchRentals();
-  };
-
+  const filteredRentals = rentals.filter((rental) =>
+    rental.name?.toString().includes(searchTerm) ||
+    rental.bookTitle?.toString().includes(searchTerm)
+  );
+  
   const styles = {
     container: {
       fontFamily: 'Arial, sans-serif',
@@ -82,15 +61,6 @@ const Returns = () => {
       border: '1px solid #ccc',
       borderRadius: '4px',
       width: '250px',
-    },
-    searchButton: {
-      padding: '10px 15px',
-      backgroundColor: '#4CAF50',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      marginLeft: '10px',
     },
     table: {
       width: '100%',
@@ -110,25 +80,6 @@ const Returns = () => {
       borderRadius: '4px',
       cursor: 'pointer',
     },
-    pagination: {
-      marginTop: '20px',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    paginationButton: {
-      padding: '10px 20px',
-      border: '1px solid #ddd',
-      backgroundColor: '#fff',
-      cursor: 'pointer',
-      margin: '0 5px',
-    },
-    paginationButtonDisabled: {
-      padding: '10px 20px',
-      border: '1px solid #ddd',
-      backgroundColor: '#eee',
-      cursor: 'not-allowed',
-      margin: '0 5px',
-    },
   };
 
   return (
@@ -137,18 +88,17 @@ const Returns = () => {
       <div style={styles.searchBox}>
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search by name or book title"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={styles.searchInput}
         />
-        <button onClick={handleSearch} style={styles.searchButton}>Search</button>
       </div>
 
       {loading ? <p>Loading...</p> : null}
       {error ? <p style={{ color: 'red' }}>{error}</p> : null}
 
-      <p>{rentals.length} rentals found.</p>
+      <p>{filteredRentals.length} rentals found.</p>
 
       <table style={styles.table}>
         <thead>
@@ -157,12 +107,12 @@ const Returns = () => {
             <th style={styles.thTd}>Name</th>
             <th style={styles.thTd}>Book</th>
             <th style={styles.thTd}>Rental date</th>
-            <th style={styles.thTd}>Expected return date</th>
-            <th style={styles.thTd}></th>
+            <th style={styles.thTd}>Return date</th>
+            <th style={styles.thTd}>Return</th>
           </tr>
         </thead>
         <tbody>
-          {currentRentals.map((rental) => (
+          {filteredRentals.map((rental) => (
             <tr key={rental.id}>
               <td style={styles.thTd}>{rental.readerId}</td>
               <td style={styles.thTd}>{rental.name}</td>
@@ -171,37 +121,20 @@ const Returns = () => {
                 <p>Written by {rental.author}</p>
                 <p>Published by {rental.published}</p>
               </td>
-              <td style={styles.thTd}>{rental.rentalDate}</td>
-              <td style={styles.thTd}>{rental.returnDate}</td>
+              <td style={styles.thTd}>{new Date(rental.rentalDate).toLocaleDateString()}</td>
+              <td style={styles.thTd}>{new Date(rental.returnDate).toLocaleDateString()}</td>
               <td style={styles.thTd}>
                 <button
-                  onClick={() => handleReturn(rental.bookId)}
+                  onClick={() => handleReturn(rental.readerId, rental.bookId)}
                   style={styles.returnButton}
                 >
-                  Return
+                  Return  
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      <div style={styles.pagination}>
-        <button
-          onClick={handlePreviousPage}
-          style={currentPage === 1 ? styles.paginationButtonDisabled : styles.paginationButton}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <button
-          onClick={handleNextPage}
-          style={currentPage * rentalsPerPage >= rentals.length ? styles.paginationButtonDisabled : styles.paginationButton}
-          disabled={currentPage * rentalsPerPage >= rentals.length}
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 };
