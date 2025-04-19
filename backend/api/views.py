@@ -4,7 +4,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import reader, Book, CheckoutRecord
-from .serializers import ReaderSerializer, BookSerializer, CheckoutRecordSerializer
+from .serializers import ReaderSerializer, BookSerializer, CheckoutRecordSerializer, ReturnSerializer
 from django.utils.timezone import now
 
 # ReaderViewSet for handling CRUD operations via REST API
@@ -106,11 +106,29 @@ def add_to_bag(request, reader_id):
 @api_view(['POST'])
 def return_book(request, reader_id, book_id):
     try:
+        # Get the reader and book instances
         reader_obj = reader.objects.get(id=reader_id)
         book = Book.objects.get(id=book_id)
+
+        # Find the checkout record for this reader and book
+        checkout_record = CheckoutRecord.objects.filter(reader=reader_obj, book=book, return_date__isnull=True).first()
+
+        if not checkout_record:
+            return JsonResponse({'error': 'This book is not checked out or has already been returned.'}, status=400)
+
+        # Mark the book as returned by updating the checkout record
+        checkout_record.return_date = now()  # Set the return date to the current time
+        checkout_record.save()
+
+        # Also mark the book as available in the system
+        book.is_checked_out = False
+        book.save()
+
+        # Remove the book from the reader's bag (since it's returned)
         reader_obj.books_in_bag.remove(book)
 
-        return JsonResponse({'message': f'Book "{book.title}" has been returned.'}, status=200)
+        return JsonResponse({'message': f'Book "{book.title}" has been returned and removed from the bag.'}, status=200)
+
     except reader.DoesNotExist:
         return JsonResponse({'error': 'Reader not found'}, status=404)
     except Book.DoesNotExist:
@@ -142,3 +160,9 @@ def get_checked_out_books(request, reader_id):
         }, status=200)
     except reader.DoesNotExist:
         return JsonResponse({'error': 'Reader not found'}, status=404)
+
+@api_view(['GET'])
+def returns_list(request):
+    rentals = CheckoutRecord.objects.all()
+    serializer = ReturnSerializer(rentals, many=True)
+    return Response(serializer.data)      
