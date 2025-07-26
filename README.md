@@ -39,3 +39,32 @@ This system allows administrators to manage books, readers, and borrowing record
 ```bash
 git clone https://github.com/Nicole9-Sky/Book-Library-Management-System.git
 cd my-library-management-app
+# On Windows
+python -m venv venv
+venv\Scripts\activate
+
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
+pip install djangorestframework
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+
+python manage.py runserver
+
+
+🌐 Frontend Setup (React) – Coming Soon
+The frontend will be built using React to interact with the Django REST API, offering a clean and modern UI for users to manage books, checkout systems, and returns.
+
+🙌 Thank You!
+Thanks for visiting this project!
+Feel free to ⭐️ the repository and explore how a full-stack system works using Django and REST APIs.
+
+📬 Contact
+Chioma Ezeh
+📍 Lagos, Nigeria
+📧 cezeh247@gmail.com
