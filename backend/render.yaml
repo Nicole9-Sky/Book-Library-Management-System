@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: library-backend
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn library_backend.wsgi
+    plan: free
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: library_backend.settings
+      - key: SECRET_KEY
+        value: your-secret-key-here
+      - key: ALLOWED_HOSTS
+        value: render.com
