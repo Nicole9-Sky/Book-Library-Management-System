@@ -221,7 +221,7 @@ const [editedReader, setEditedReader] = useState({
                 <th style={{ ...styles.thTd, ...styles.th }}>Reference ID</th>
                 <th style={{ ...styles.thTd, ...styles.th }}>Address</th>
                 <th style={{ ...styles.thTd, ...styles.th }}>Actions</th>
-
+                
               </tr>
             </thead>
             <tbody>
