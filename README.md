@@ -1,61 +1,83 @@
-# Library Management System
+# 📚 Library Management System
 
-A full-stack library management system built with Django and *React. This system allows users to manage books, users, borrowing records, and more. 
-The backend is powered by *Django REST Framework to create RESTful APIs, while the frontend uses React for building a responsive and interactive user interface.
+Welcome to my **Library Management System**, a full-stack application built with **Django**, **Django REST Framework**, and **React**.
 
-## Features
+This system allows administrators to manage books, readers, and borrowing records, while users can explore and manage their own book collections through a clean and interactive interface.
 
-- *Book Management:* Add, update, and delete books in the system (admin side only).
-- *Reader Management:* Manage library readers and their rental records.
-- *Book Bag:* Readers can add books to their personal bags.
-- *Checkout System:* Allows readers to check out the selected books.(In Progress)
-- *Return System:* Manage returns and track due dates.(In Progress)
-- *React Frontend:* A user-friendly interface for managing book bags, checking out, and returns.
+---
 
-## Table of Contents
+## ✨ Key Features
 
-- [Installation](#installation)
-- [Setup](#setup)
+- **Book Management (Admin):** Add, update, or delete books.
+- **Reader Dashboard:** Users can view books, manage personal book bags, and track borrowing.
+- **Book Bag System:** Readers can save books for checkout.
+- **Checkout & Return System:** Easily check out books and manage return deadlines (In Progress).
+- **User Authentication:** Secure login and access control for users and admins.
+- **RESTful API:** Backend powered by Django REST Framework.
+- **Modern UI:** Clean, responsive React frontend for great user experience.
 
-## Installation
+---
 
-### Backend (Django)                                                                      
+## 🧰 Tech Stack
 
-1. Clone the repository:
+### 🔙 Backend
+- Python + Django
+- Django REST Framework (DRF)
+- SQLite3 / MySQL
+- Postman (for testing APIs)
 
-   ```bash
-   git clone https://github.com/AshishGitHub12/Library-Management-System.git
-   cd library-management-system/backend
+### 🔜 Frontend (Planned)
+- React (JSX + CSS)
+- Axios (API requests)
+- Bootstrap / Tailwind CSS (for styling)
 
-2. Create a virtual environment and activate it:
-   python -m venv
-   # On Windows use source venv\Scripts\activate
+---
 
-3. Install the dependencies:
-   pip install -r requirements.txt
-   pip install djangorestframework
+## 🚀 How to Run the Project Locally
 
-4. Apply migrations to set up the database:
-    python manage.py makemigrations
-    python manage.py migrate
+### Backend (Django):
+1. Clone the repo:  
+   `git clone https://github.com/Nicole9-Sky/Book-Library-Management-System.git`
+2. Navigate to backend:  
+   `cd backend`
+3. Create virtual environment:  
+   `python -m venv venv`
+4. Activate environment:  
+   `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux)
+5. Install dependencies:  
+   `pip install -r requirements.txt`
+6. Run migrations:  
+   `python manage.py migrate`
+7. Start server:  
+   `python manage.py runserver`
 
-5. Create a superuser for the Django admin panel:
-    python manage.py createsuperuser
+### Frontend (React):
+1. Open a new terminal
+2. Navigate to frontend:  
+   `cd frontend`
+3. Install packages:  
+   `npm install`
+4. Start server:  
+   `npm start`
 
-6. Run the development server:
-    python manage.py runserver
 
-# Setup
+🌐 Frontend Setup (React) – Coming Soon
+The frontend will be built using React to interact with the Django REST API, offering a clean and modern UI for users to manage books, checkout systems, and returns.
 
-# Frontend (React)
+🙌 Thank You!
+Thanks for visiting this project!
+Feel free to ⭐️ the repository and explore how a full-stack system works using Django and REST APIs.
 
-1. Navigate to the frontend directory:
-    cd ../frontend
+📬 Location
+📍 Lagos, Nigeria
+🌐 [LinkedIn](https://www.linkedin.com/in/nicole-in-tech)  
 
-2. Install frontend dependencies using npm:
-    npm install
+# Book Library Management System
 
-3. Run the frontend development server:
-    npm start
-
-# THANK YOU
+## 📸 Screenshots
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Books.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Return.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Readers.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/My%20BAG.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Homes.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Home.png
