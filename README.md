@@ -33,28 +33,32 @@ This system allows administrators to manage books, readers, and borrowing record
 
 ---
 
-## 🚀 Getting Started (Backend Setup)
+## 🚀 How to Run the Project Locally
 
-### Clone the repository:
-```bash
-git clone https://github.com/Nicole9-Sky/Book-Library-Management-System.git
-cd my-library-management-app
-# On Windows
-python -m venv venv
-venv\Scripts\activate
+### Backend (Django):
+1. Clone the repo:  
+   `git clone https://github.com/Nicole9-Sky/Book-Library-Management-System.git`
+2. Navigate to backend:  
+   `cd backend`
+3. Create virtual environment:  
+   `python -m venv venv`
+4. Activate environment:  
+   `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux)
+5. Install dependencies:  
+   `pip install -r requirements.txt`
+6. Run migrations:  
+   `python manage.py migrate`
+7. Start server:  
+   `python manage.py runserver`
 
-# On macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-
-pip install -r requirements.txt
-pip install djangorestframework
-
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-
-python manage.py runserver
+### Frontend (React):
+1. Open a new terminal
+2. Navigate to frontend:  
+   `cd frontend`
+3. Install packages:  
+   `npm install`
+4. Start server:  
+   `npm start`
 
 
 🌐 Frontend Setup (React) – Coming Soon
@@ -66,6 +70,7 @@ Feel free to ⭐️ the repository and explore how a full-stack system works usi
 
 📬 Location
 📍 Lagos, Nigeria
+🌐 [LinkedIn](https://www.linkedin.com/in/nicole-in-tech)  
 
 # Book Library Management System
 
