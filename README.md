@@ -64,7 +64,15 @@ The frontend will be built using React to interact with the Django REST API, off
 Thanks for visiting this project!
 Feel free to ⭐️ the repository and explore how a full-stack system works using Django and REST APIs.
 
-📬 Contact
-Chioma Ezeh
+📬 Location
 📍 Lagos, Nigeria
-📧 cezeh247@gmail.com
+
+# Book Library Management System
+
+## 📸 Screenshots
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Books.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Return.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Readers.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/My%20BAG.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Homes.png
+https://github.com/Nicole9-Sky/Book-Library-Management-System/blob/main/Home.png
