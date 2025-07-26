@@ -1,67 +1,41 @@
-# Library Management System
+# 📚 Library Management System
 
-Welcome to my Library Management System!  
-A full-stack library management system built with Django and *React. This system allows users to manage books, users, borrowing records, and more. 
-* Django REST Framework powers the backend to create RESTful APIs, while the frontend uses React for building a responsive and interactive user interface.
+Welcome to my **Library Management System**, a full-stack application built with **Django**, **Django REST Framework**, and **React**.
 
-## Features
-
-- *Book Management:* Add, update, and delete books in the system (admin side only).
-- *Reader Management:* Manage library readers and their rental records.
-- *Book Bag:* Readers can add books to their personal bags.
-- *Checkout System:* Allows readers to check out the selected books. (In Progress)
-- *Return System:* Manage returns and track due dates. (In Progress)
-- *React Frontend:* A user-friendly interface for managing book bags, checking out, and returns.
-
-## Table of Contents
-
-## 🔧 Features
-
-- 📕 Add, update, and delete books
-- 👤 Manage users and their borrowed books
-- 📊 Track borrowing & return history
-- 🛡️ Authentication & authorization
-- 🌐 RESTful API built with Django REST Framework
+This system allows administrators to manage books, readers, and borrowing records, while users can explore and manage their own book collections through a clean and interactive interface.
 
 ---
 
-## 🧪 Technologies Used
+## ✨ Key Features
 
-- Django
-- Django REST Framework
-- SQLite3 or MySQL
-- Postman (for testing)
-- Git & GitHub
-### Backend (Django)                                                       
+- **Book Management (Admin):** Add, update, or delete books.
+- **Reader Dashboard:** Users can view books, manage personal book bags, and track borrowing.
+- **Book Bag System:** Readers can save books for checkout.
+- **Checkout & Return System:** Easily check out books and manage return deadlines (In Progress).
+- **User Authentication:** Secure login and access control for users and admins.
+- **RESTful API:** Backend powered by Django REST Framework.
+- **Modern UI:** Clean, responsive React frontend for great user experience.
 
-2. Create a virtual environment and activate it:
-   python -m venv
-   # On Windows use source venv\Scripts\activate
+---
 
-3. Install the dependencies:
-   pip install -r requirements.txt
-   pip install djangorestframework
+## 🧰 Tech Stack
 
-4. Apply migrations to set up the database:
-    python manage.py makemigrations
-    python manage.py migrate
+### 🔙 Backend
+- Python + Django
+- Django REST Framework (DRF)
+- SQLite3 / MySQL
+- Postman (for testing APIs)
 
-5. Create a superuser for the Django admin panel:
-    python manage.py createsuperuser
+### 🔜 Frontend (Planned)
+- React (JSX + CSS)
+- Axios (API requests)
+- Bootstrap / Tailwind CSS (for styling)
 
-6. Run the development server:
-    python manage.py runserver
+---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Backend Setup)
 
-git clone https://github.com/Nicole9-Sky/my-library-management-app.git
+### Clone the repository:
+```bash
+git clone https://github.com/Nicole9-Sky/Book-Library-Management-System.git
 cd my-library-management-app
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate (Windows)
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-# Setup
-
-# Frontend (React)
-# THANK YOU
