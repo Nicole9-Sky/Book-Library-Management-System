@@ -196,7 +196,7 @@ const [editedReader, setEditedReader] = useState({
       
       {/* Left Section: Book/Reader List */}
       <div style={styles.leftSection}>
-        <h1 style={styles.header}>Readers List</h1>
+        <h1 style={styles.header}>📚 Readers List</h1>
         <div style={styles.searchSection}>
           <input
             type="text"

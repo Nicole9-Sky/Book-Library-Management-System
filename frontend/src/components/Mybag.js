@@ -155,7 +155,7 @@ const MyBag = () => {
     <div style={styles.container}>
       {/* Book List Section */}
       <div style={styles.bookList}>
-        <h2>Books in your bag - {books.length}</h2>
+        <h2>Your Reading Cart - {books.length} Selected</h2>
         {books.length === 0 ? (
           <p>Your bag is empty.</p>
         ) : (
@@ -233,9 +233,10 @@ const MyBag = () => {
         <div style={styles.instructions}>
           <ul style={styles.instructionsList}>
             <li>Readers should not mark, underline, or damage library materials.</li>
-            <li>Handle library property carefully and avoid disturbing others.</li>
+            <li>Please return all books on time to avoid overdue charges.</li>
             <li>No library material can be taken out without librarian permission.</li>
-            <li>Four books can be issued for up to two weeks and must be returned on time.</li>
+            <li>Enjoy a quiet and clean reading environment.</li>
+             <li>Respect all library materials. Damages may lead to penalties.</li> <li>Four books can be issued for up to two weeks and must be returned on time.</li>
           </ul>
         </div>
       </div>

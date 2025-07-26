@@ -49,8 +49,8 @@ const Books = () => {
     },
     button: {
       padding: '10px 15px',
-      fontSize: '16px', 
-      margin:'5px',
+      fontSize: '16px',
+      margin: '5px',
       backgroundColor: '#2563eb',
       color: 'white',
       border: 'none',
@@ -66,16 +66,14 @@ const Books = () => {
       borderRadius: '5px',
       cursor: 'pointer',
     },
-    booksList: {
-      marginTop: '20px',
+    bookCard: {
+      backgroundColor: '#fff',
+      border: '1px solid #ddd',
+      borderRadius: '10px',
+      padding: '15px',
+      marginBottom: '15px',
       textAlign: 'left',
-    },
-    bookItem: {
-      padding: '10px 0',
-      borderBottom: '1px solid #ddd',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
     },
     formField: {
       display: 'flex',
@@ -87,11 +85,11 @@ const Books = () => {
       fontSize: '16px',
       border: '1px solid #ccc',
       borderRadius: '5px',
-      margin:'5px',
+      margin: '5px',
     },
     addBookButton: {
       padding: '10px 20px',
-      margin:'5px',
+      margin: '5px',
       fontSize: '16px',
       backgroundColor: '#28a745',
       color: 'white',
@@ -101,7 +99,6 @@ const Books = () => {
     },
   };
 
-  // Fetch books from the API
   useEffect(() => {
     axios.get('http://localhost:8000/api/books/')
       .then(response => {
@@ -132,9 +129,7 @@ const Books = () => {
     localStorage.setItem('bag', JSON.stringify(updatedBag));
   };
 
-  const isInBag = (bookId) => {
-    return bag.some(b => b.id === bookId);
-  };
+  const isInBag = (bookId) => bag.some(b => b.id === bookId);
 
   const handleInputChange = (e) => {
     setNewBook({ ...newBook, [e.target.name]: e.target.value });
@@ -187,7 +182,7 @@ const Books = () => {
   return (
     <div style={styles.container}>
       <div style={styles.searchSection}>
-        <h2>Search for books</h2>
+        <h2>📚 Search for books</h2>
         <div style={styles.searchBox}>
           <input
             type="text"
@@ -204,65 +199,54 @@ const Books = () => {
 
       <div style={styles.contentWrapper}>
         <div style={styles.booksSection}>
-          <div style={styles.booksList}>
-            {books.map(book => (
-              <div key={book.id} style={styles.bookItem}>
-                {editingBook && editingBook.id === book.id ? (
-                  <div style={{ flex: 1 }}>
-                    <input
-                      type="text"
-                      name="title"
-                      value={editingBook.title}
-                      onChange={handleEditChange}
-                      style={styles.formInput}
-                    />
-                    <input
-                      type="text"
-                      name="author"
-                      value={editingBook.author}
-                      onChange={handleEditChange}
-                      style={styles.formInput}
-                    />
-                    <input
-                      type="text"
-                      name="published"
-                      value={editingBook.published}
-                      onChange={handleEditChange}
-                      style={styles.formInput}
-                    />
-                    <button style={styles.addBookButton} onClick={handleUpdateBook}>
-                      Save
-                    </button>
-                    <button style={styles.removeButton} onClick={() => setEditingBook(null)}>
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ flex: 1 }}>
-                    <h3>{book.title}</h3>
-                    <p>Written by {book.author}</p>
-                    <p>Published by {book.published}</p>
-                    <button style={styles.button} onClick={() => handleEditClick(book)}>
-                      Edit
-                    </button>
-                    <button style={styles.removeButton} onClick={() => handleDeleteBook(book.id)}>
-                      Delete
-                    </button>
-                  </div>
-                )}
-
-                {isInBag(book.id) ? (
-                  <button style={styles.removeButton} onClick={() => removeFromBag(book.id)}>
-                    Remove
+          {books.map(book => (
+            <div key={book.id} style={styles.bookCard}>
+              {editingBook && editingBook.id === book.id ? (
+                <>
+                  <input
+                    type="text"
+                    name="title"
+                    value={editingBook.title}
+                    onChange={handleEditChange}
+                    style={styles.formInput}
+                  />
+                  <input
+                    type="text"
+                    name="author"
+                    value={editingBook.author}
+                    onChange={handleEditChange}
+                    style={styles.formInput}
+                  />
+                  <input
+                    type="text"
+                    name="published"
+                    value={editingBook.published}
+                    onChange={handleEditChange}
+                    style={styles.formInput}
+                  />
+                  <button style={styles.addBookButton} onClick={handleUpdateBook}>
+                    Save
                   </button>
-                ) : (
-                  <button style={styles.button} onClick={() => addToBag(book)}>
-                    Add to bag
+                  <button style={styles.removeButton} onClick={() => setEditingBook(null)}>
+                    Cancel
                   </button>
-                )}
-              </div>
-            ))}
-          </div>
+                </>
+              ) : (
+                <>
+                  <h3>📘 Title: {book.title}</h3>
+                  <p>✍️ Author: {book.author}</p>
+                  <p>🏢 Published by: {book.published}</p>
+                  <button style={styles.button} onClick={() => handleEditClick(book)}>Edit</button>
+                  <button style={styles.removeButton} onClick={() => handleDeleteBook(book.id)}>Delete</button>
+                  {isInBag(book.id) ? (
+                    <button style={styles.removeButton} onClick={() => removeFromBag(book.id)}>Remove from bag</button>
+                  ) : (
+                    <button style={styles.button} onClick={() => addToBag(book)}>Add to bag</button>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
         </div>
 
         <div style={styles.formSection}>
@@ -297,9 +281,7 @@ const Books = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button style={styles.addBookButton} onClick={handleAddBook}>
-            Add Book
-          </button>
+          <button style={styles.addBookButton} onClick={handleAddBook}>Add Book</button>
         </div>
       </div>
     </div>

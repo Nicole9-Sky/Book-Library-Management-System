@@ -10,6 +10,9 @@ const Home = () => {
       backgroundColor: '#f0f0f0',
       margin: 0,
       padding: 0,
+      fontSize: '20px',
+      fontWeight: 'bold',
+      color: '#333',
     },
     navbar: {
       display: 'flex',
@@ -102,11 +105,11 @@ const Home = () => {
       {/* Hero Section */}
       <section style={styles.hero}>
         <div style={styles.heroText}>
-          <h1 style={styles.heroTitle}>Hello, readers!</h1>
+          <h1 style={styles.heroTitle}>Hi, I’m Chioma 👋</h1>
           <p style={styles.heroDescription}>
-            Welcome to City Library. We have a large collection of books to cater to the reading needs of all kinds of readers.
+           Discover thousands of books, manage your library account, and stay organized — all in one place.
           </p>
-          <button style={styles.ctaButton} onClick={() => navigate('/books')}>Browse our collection</button>
+          <button style={styles.ctaButton} onClick={() => navigate('/books')}>Explore Books</button>
         </div>
       </section>
 
@@ -132,14 +135,15 @@ const Home = () => {
         <div style={styles.infoBox}>
           <h2 style={styles.infoBoxTitle}>Thought for the day</h2>
           <p style={styles.infoBoxContent}>
-            "Just don’t give up trying to do what you really want to do. Where there is love and inspiration, I don’t think you can go wrong." – Ella Fitzgerald
+            "You need to keep Runing, but always remember to rest and laugh and be totally at peace with yourself, and let happiness be your new designer that you put on everyday.
+          Blieveing is Seeing." – Chioma Mabel
           </p>
         </div>
       </section>
 
       {/* Footer */}
       <footer style={styles.footer}>
-        <p>© City Library 2025</p>
+        <p>© 2025 Chioma | Learning with the best</p>
       </footer>
     </div>
   );
