@@ -10,8 +10,6 @@ const Books = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [newBook, setNewBook] = useState({ title: '', author: '', published: '' });
   const [editingBook, setEditingBook] = useState(null);
-
-  const BASE_URL = 'https://book-library-management-system-3.onrender.com/api/books';
   
   const styles = {
     container: {
