@@ -33,7 +33,7 @@ const MyBag = () => {
     }
 
     axios
-      .get(`http://localhost:8000/api/reader/${readerId}/`)
+      .get(`https://book-library-management-system-3.onrender.com/api/reader/${readerId}/`)
       .then((response) => {
         const { name, contact, reference_id } = response.data;
         setReaderDetails({
@@ -57,7 +57,7 @@ const MyBag = () => {
     }
   
     axios
-      .post(`http://localhost:8000/api/reader/${readerId}/checkout/`, {
+      .post(`https://book-library-management-system-3.onrender.com/api/reader/${readerId}/checkout/`, {
         reader_id: readerId,
         books: books.map((book) => book.id),
         due_date: returnDueDate,  // Send the due date

@@ -117,7 +117,7 @@ const [editedReader, setEditedReader] = useState({
 
   // Fetch readers from the Django API
   useEffect(() => {
-    axios.get('http://localhost:8000/api/readers/')
+    axios.get('https://book-library-management-system-3.onrender.com/api/readers/')
       .then(response => {
         setReaders(response.data);
         setLoading(false);
@@ -139,7 +139,7 @@ const [editedReader, setEditedReader] = useState({
   };
 
   const handleUpdateReader = () => {
-    axios.put(`http://localhost:8000/api/readers/${editingReaderId}/`, editedReader)
+    axios.put(`https://book-library-management-system-3.onrender.com/api/readers/${editingReaderId}/`, editedReader)
       .then(response => {
         const updatedReaders = readers.map(reader =>
           reader.id === editingReaderId ? response.data : reader
@@ -162,7 +162,7 @@ const [editedReader, setEditedReader] = useState({
   };
 
   const handleAddReader = () => {
-    axios.post('http://localhost:8000/api/readers/', newReader)
+    axios.post('https://book-library-management-system-3.onrender.com/api/readers/', newReader)
       .then(response => {
         setReaders([...readers, response.data]); // Add new reader to the list
         setNewReader({
@@ -180,7 +180,7 @@ const [editedReader, setEditedReader] = useState({
 
   const handleDeleteReader = (id) => {
     if (window.confirm("Are you sure you want to delete this reader?")) {
-      axios.delete(`http://localhost:8000/api/readers/${id}/`)
+      axios.delete(`https://book-library-management-system-3.onrender.com/api/readers/${id}/`)
         .then(() => {
           setReaders(readers.filter(reader => reader.id !== id));
         })
@@ -221,7 +221,7 @@ const [editedReader, setEditedReader] = useState({
                 <th style={{ ...styles.thTd, ...styles.th }}>Reference ID</th>
                 <th style={{ ...styles.thTd, ...styles.th }}>Address</th>
                 <th style={{ ...styles.thTd, ...styles.th }}>Actions</th>
-                
+
               </tr>
             </thead>
             <tbody>

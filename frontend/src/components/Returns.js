@@ -10,7 +10,7 @@ const Returns = () => {
   const fetchRentals = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:8000/api/returns/`)
+      .get(`https://book-library-management-system-3.onrender.com/api/returns/`)
       .then((response) => {
         setRentals(response.data);
         setError('');
@@ -28,7 +28,7 @@ const Returns = () => {
   // Handle book return
   const handleReturn = (readerId, bookId) => {
     axios
-      .post(`http://localhost:8000/api/reader/${readerId}/return_book/${bookId}/`)
+      .post(`https://book-library-management-system-3.onrender.com/api/reader/${readerId}/return_book/${bookId}/`)
       .then(() => {
         alert('Book returned successfully!');
         fetchRentals();

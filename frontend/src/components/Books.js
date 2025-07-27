@@ -49,8 +49,8 @@ const Books = () => {
     },
     button: {
       padding: '10px 15px',
-      fontSize: '16px',
-      margin: '5px',
+      fontSize: '16px', 
+      margin:'5px',
       backgroundColor: '#2563eb',
       color: 'white',
       border: 'none',
@@ -66,14 +66,16 @@ const Books = () => {
       borderRadius: '5px',
       cursor: 'pointer',
     },
-    bookCard: {
-      backgroundColor: '#fff',
-      border: '1px solid #ddd',
-      borderRadius: '10px',
-      padding: '15px',
-      marginBottom: '15px',
+    booksList: {
+      marginTop: '20px',
       textAlign: 'left',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+    },
+    bookItem: {
+      padding: '10px 0',
+      borderBottom: '1px solid #ddd',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
     formField: {
       display: 'flex',
@@ -85,11 +87,11 @@ const Books = () => {
       fontSize: '16px',
       border: '1px solid #ccc',
       borderRadius: '5px',
-      margin: '5px',
+      margin:'5px',
     },
     addBookButton: {
       padding: '10px 20px',
-      margin: '5px',
+      margin:'5px',
       fontSize: '16px',
       backgroundColor: '#28a745',
       color: 'white',
@@ -99,8 +101,9 @@ const Books = () => {
     },
   };
 
+  // Fetch books from the API
   useEffect(() => {
-    axios.get('http://localhost:8000/api/books/')
+    axios.get('https://book-library-management-system-3.onrender.com/api/books/')
       .then(response => {
         setBooks(response.data);
       })
@@ -110,7 +113,7 @@ const Books = () => {
   }, []);
 
   const handleSearch = () => {
-    axios.get(`http://localhost:8000/api/books/?search=${searchTerm}`)
+    axios.get(`https://book-library-management-system-3.onrender.com/api/books/?search=${searchTerm}`)
       .then(response => setBooks(response.data))
       .catch(error => console.error('Search error:', error));
   };
@@ -129,14 +132,16 @@ const Books = () => {
     localStorage.setItem('bag', JSON.stringify(updatedBag));
   };
 
-  const isInBag = (bookId) => bag.some(b => b.id === bookId);
+  const isInBag = (bookId) => {
+    return bag.some(b => b.id === bookId);
+  };
 
   const handleInputChange = (e) => {
     setNewBook({ ...newBook, [e.target.name]: e.target.value });
   };
 
   const handleAddBook = () => {
-    axios.post('http://localhost:8000/api/books/', newBook)
+    axios.post('https://book-library-management-system-3.onrender.com/api/books/', newBook)
       .then(response => {
         setBooks([...books, response.data]);
         setNewBook({ title: '', author: '', published: '' });
@@ -155,7 +160,7 @@ const Books = () => {
   };
 
   const handleUpdateBook = () => {
-    axios.put(`http://localhost:8000/api/books/${editingBook.id}/`, editingBook)
+    axios.put(`https://book-library-management-system-3.onrender.com/api/books/${editingBook.id}/`, editingBook)
       .then(response => {
         const updatedBooks = books.map(book =>
           book.id === editingBook.id ? response.data : book
@@ -169,7 +174,7 @@ const Books = () => {
   };
 
   const handleDeleteBook = (id) => {
-    axios.delete(`http://localhost:8000/api/books/${id}/`)
+    axios.delete(`https://book-library-management-system-3.onrender.com/api/books/${id}/`)
       .then(() => {
         const updatedBooks = books.filter(book => book.id !== id);
         setBooks(updatedBooks);
@@ -199,54 +204,65 @@ const Books = () => {
 
       <div style={styles.contentWrapper}>
         <div style={styles.booksSection}>
-          {books.map(book => (
-            <div key={book.id} style={styles.bookCard}>
-              {editingBook && editingBook.id === book.id ? (
-                <>
-                  <input
-                    type="text"
-                    name="title"
-                    value={editingBook.title}
-                    onChange={handleEditChange}
-                    style={styles.formInput}
-                  />
-                  <input
-                    type="text"
-                    name="author"
-                    value={editingBook.author}
-                    onChange={handleEditChange}
-                    style={styles.formInput}
-                  />
-                  <input
-                    type="text"
-                    name="published"
-                    value={editingBook.published}
-                    onChange={handleEditChange}
-                    style={styles.formInput}
-                  />
-                  <button style={styles.addBookButton} onClick={handleUpdateBook}>
-                    Save
+          <div style={styles.booksList}>
+            {books.map(book => (
+              <div key={book.id} style={styles.bookItem}>
+                {editingBook && editingBook.id === book.id ? (
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="text"
+                      name="title"
+                      value={editingBook.title}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <input
+                      type="text"
+                      name="author"
+                      value={editingBook.author}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <input
+                      type="text"
+                      name="published"
+                      value={editingBook.published}
+                      onChange={handleEditChange}
+                      style={styles.formInput}
+                    />
+                    <button style={styles.addBookButton} onClick={handleUpdateBook}>
+                      Save
+                    </button>
+                    <button style={styles.removeButton} onClick={() => setEditingBook(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ flex: 1 }}>
+                    <h3>{book.title}</h3>
+                    <p>Author: {book.author}</p>
+                    <p>Published by {book.published}</p>
+                    <button style={styles.button} onClick={() => handleEditClick(book)}>
+                      Edit
+                    </button>
+                    <button style={styles.removeButton} onClick={() => handleDeleteBook(book.id)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
+
+                {isInBag(book.id) ? (
+                  <button style={styles.removeButton} onClick={() => removeFromBag(book.id)}>
+                    Remove from bag
                   </button>
-                  <button style={styles.removeButton} onClick={() => setEditingBook(null)}>
-                    Cancel
+                ) : (
+                  <button style={styles.button} onClick={() => addToBag(book)}>
+                    Add to bag
                   </button>
-                </>
-              ) : (
-                <>
-                  <h3>📘 Title: {book.title}</h3>
-                  <p>✍️ Author: {book.author}</p>
-                  <p>🏢 Published by: {book.published}</p>
-                  <button style={styles.button} onClick={() => handleEditClick(book)}>Edit</button>
-                  <button style={styles.removeButton} onClick={() => handleDeleteBook(book.id)}>Delete</button>
-                  {isInBag(book.id) ? (
-                    <button style={styles.removeButton} onClick={() => removeFromBag(book.id)}>Remove from bag</button>
-                  ) : (
-                    <button style={styles.button} onClick={() => addToBag(book)}>Add to bag</button>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div style={styles.formSection}>
@@ -281,7 +297,9 @@ const Books = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button style={styles.addBookButton} onClick={handleAddBook}>Add Book</button>
+          <button style={styles.addBookButton} onClick={handleAddBook}>
+            Add Book
+          </button>
         </div>
       </div>
     </div>
