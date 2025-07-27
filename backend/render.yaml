@@ -11,4 +11,4 @@ services:
       - key: SECRET_KEY
         value: l)(-t%4h9!t2zy#qx59+vm-zx&3)1lve&!+uv+^obx2#cbz7p
       - key: ALLOWED_HOSTS
-        value: *
+        value: render.com
