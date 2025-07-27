@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: library-backend
+    name: backend
     env: python
     buildCommand: ""
     startCommand: gunicorn crud.wsgi:application
@@ -9,6 +9,6 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: crud.settings
       - key: SECRET_KEY
-        value: your-secret-key-here
+        value: l)(-t%4h9!t2zy#qx59+vm-zx&3)1lve&!+uv+^obx2#cbz7p
       - key: ALLOWED_HOSTS
-        value: render.com
+        value: *
